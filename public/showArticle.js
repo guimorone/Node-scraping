@@ -1,5 +1,4 @@
 const feedDisplay = document.querySelector('#feed');
-const today = new Date();
 
 function reverseString(s) {
     return [...s].reverse().join("");

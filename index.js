@@ -10,7 +10,7 @@ app.use(express.static('public'));
 const url = 'https://www.theguardian.com/uk';
 
 app.get('/', (req, res) => {
-    res.sendFile('public/index.html');
+    res.sendFile('index.html');
 });
 
 app.get('/results', async (req, res) => {
