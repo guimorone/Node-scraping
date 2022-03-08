@@ -12,24 +12,38 @@ app.get('/', (req, res) => {
     res.json('This is my webscraper');
 });
 
-app.get('/results', (req, res) => {
-    axios(url)
-        .then(response => {
-            const html = response.data;
-            const $ = load(html);
-            const articles = [];
-            $('.fc-item__title', html).each( _ => {
-                const title = $(this).text();
-                const url = $(this).find('a').attr('href');
+app.get('/results', async (req, res) => {
+    try {
+        const response = await axios.get(url);
+        const html = response.data;
+        const $ = load(html);
+        const elements = $('.fc-item__title', html);
+        const articles = [];
+
+        for(let i = 0; i < elements.length; i++) {
+            try {
+                // título do artigo
+                console.log(elements[i.toString()]);
+                const title = elements[i.toString()].children[0].children[0].children[0].data;
+                // link do artigo
+                const urlArtigo = elements[i.toString()].children[0].attribs.href;
                 articles.push({
                     title,
-                    url
+                    urlArtigo
                 });
-            })
-            res.json(articles)
-        }).catch(err => console.log(err));
+            } catch (exception) {
+                // tem dado erro falando
+                continue;
+            }
+            
+        }
+
+        res.json(articles);
+    } catch (exception) {
+        process.stderr.write(`ERROR received from ${url}: ${exception}\n`);
+    }
 });
 
 
-const PORT = 3000;
+export const PORT = 3000;
 app.listen(PORT, _ => console.log(`server running on PORT ${PORT}`));
